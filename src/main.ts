@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { RmqModule } from './rmq.module';
 import * as momentTimezone from 'moment-timezone';
 import { Logger } from '@nestjs/common';
 import 'dotenv/config';
@@ -9,7 +9,7 @@ import { AllExceptionsFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('NestApplication');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(RmqModule);
 
   app.useGlobalInterceptors(new LogginInterceptor(), new TimeoutInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
@@ -21,6 +21,7 @@ async function bootstrap() {
   };
 
   await app.listen(process.env.PORT || 3333).then(() => {
+    logger.log(process.env.PORT);
     logger.log(
       `App running on port ${process.env.PORT ? process.env.PORT : 3333}`,
     );
