@@ -23,10 +23,11 @@ import { Observable } from 'rxjs';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
 import { ExceptionsFilter } from './filters/rpc-exception.filter';
+import 'dotenv/config';
 
 @Controller()
-export class AppController {
-  private logger = new Logger(AppController.name);
+export class RmqController {
+  private logger = new Logger(RmqController.name);
 
   private clientAdminBackend: ClientProxy;
 
@@ -34,7 +35,9 @@ export class AppController {
     this.clientAdminBackend = ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
-        urls: [process.env.RMQ],
+        urls: [
+          `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}/${process.env.RMQ_VHOST}`,
+        ],
         queue: process.env.QUEUE,
       },
     });

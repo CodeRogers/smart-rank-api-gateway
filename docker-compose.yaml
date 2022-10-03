@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  nest-api-gateway:
+    container_name: api-gateway
+    image: nest:1.0.0
+    build:
+      context: .
+      target: development
+    restart: unless-stopped
+    command: npm run start:dev
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/home/node/src/app/
+      - /home/node/src/app/node_modules
+    networks:
+      - smart-rank-net
+  rabbitmq:
+    container_name: rabbitmq-smart-rank
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=smart-rank
+      - RABBITMQ_DEFAULT_PASS=123456
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - smart-rank-net
+networks:
+  smart-rank-net:
+    driver: bridge
